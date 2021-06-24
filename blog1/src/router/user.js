@@ -12,9 +12,9 @@ const getCookieExpires = () => {
 const handleUserRouter = (req, res) => {
     const method = req.method
     // 获取博客列表
-    if (method === 'GET' && req.path === '/api/user/login') {
+    if (method === 'POST' && req.path === '/api/user/login') {
         // const { username, password } = req.body
-         const { username, password } = req.query
+         const { username, password } = req.body
         let result = login(username, password)
         // if (result) {
         //     return new SuccessModel()
@@ -35,18 +35,6 @@ const handleUserRouter = (req, res) => {
                 return new ErrorModel('登录失败')
             }
         })
-    }
-    
-    // 登录验证 === 测试
-    if (method === 'GET' && req.path === '/api/user/login-test') {
-        if (req.session.username) {
-            return Promise.resolve(
-                new SuccessModel({
-                    session: req.session
-                })
-            )
-        } 
-        return Promise.resolve(new ErrorModel('尚未登录'))
     }
 }
 

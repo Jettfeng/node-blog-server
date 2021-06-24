@@ -1,6 +1,15 @@
 const { getList, getDetail, newBlog, updateBlog, delBlog } = require('../controller/blog')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 
+// 统一的登录验证函数
+const loginCheck = (req) => {
+    if (!req.session.username) {
+        return Promise.resolve(
+            new ErrorModel('尚未登录')
+        )
+    }
+}
+
 const handleBlogRouter = (req, res) => {
     const method = req.method
     const id = req.query.id
@@ -29,8 +38,14 @@ const handleBlogRouter = (req, res) => {
         // const blogData = req.body
         // const data = newBlog(req.body)
         // return new SuccessModel(data)
-        const author = 'sdfsd' // 假数据，待开发登录后改改成真数据
-        req.body.author = author
+        //const author = 'sdfsd' // 假数据，待开发登录后改改成真数据
+        //req.body.author = author
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            // 未登录
+            return loginCheckResult
+        }
+        req.body.author = req.session.username
         const result = newBlog(req.body)
         return result.then(data => {
             return new SuccessModel(data)
@@ -38,6 +53,11 @@ const handleBlogRouter = (req, res) => {
     }
     // 更新一篇博客
     if (method === 'POST' && req.path === '/api/blog/update') {
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            // 未登录
+            return loginCheckResult
+        }
         const result = updateBlog(id, req.body)
         return result.then(val => {
             if (val) {
@@ -60,7 +80,13 @@ const handleBlogRouter = (req, res) => {
         // } else {
         //     return new ErrorModel('删除博客失败')
         // }
-        const author = 'sdfsd' // 假数据，待开发登录后改改成真数据
+        //const author = 'sdfsd' // 假数据，待开发登录后改改成真数据
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            // 未登录
+            return loginCheckResult
+        }
+        const author = req.session.username
         const result = delBlog(id, author)
         return result.then(val => {
             if (val) {
