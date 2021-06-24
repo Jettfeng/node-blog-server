@@ -69,6 +69,10 @@ const serverHandle = (req, res) => {
     console.log(req.cookie);
 
       // 解析session
+    //   session问题
+    //   目前session直接是js变量，防在node.js进程内存中
+    //   1.进程内存有限，访问量过大，内存暴增怎么办？
+    //   2.正式线上运行是多进程，进程之间内存无法共享
       let needSetCookie = false
       let userId = req.cookie.userid
       if (userId) {
