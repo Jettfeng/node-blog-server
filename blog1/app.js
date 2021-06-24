@@ -47,13 +47,14 @@ const serverHandle = (req, res) => {
         if(!item) {
             return
         }
+        //设置了httpOnly的情况下，username=name; username=name2,如果破httpOnly是针对name2设置的，虽然name和name都会发送到服务端，但是服务端只能获取到name2
         const arr = item.split('=')
-        const key = arr[0]
-        const value = arr[1]
+        const key = arr[0].trim() // cookie拼接的时候有空格，所以要去掉，不让拿不到
+        const value = arr[1].trim()
         req.cookie[key] = value
     })
 
-    console.log('req.cookie is ');
+    console.log('req.cookie is ')
     console.log(req.cookie);
     // 处理POSTData
     getPostData(req).then(postData => {
