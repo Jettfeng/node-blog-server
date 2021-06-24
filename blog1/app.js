@@ -2,6 +2,15 @@ const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
+// 获取cookie的过期时间
+const getCookieExpires = () => {
+    const d = new Date()
+    d.setTime(d.getTime()+ (24 *60 * 60 *1000))
+    console.log(`d.toGMTString()===${d.toGMTString()}`);
+    return d.toGMTString()
+}
+
+// session数据
 const SESSION_DATA = {}
 
 // 用于处理 post data
@@ -60,19 +69,20 @@ const serverHandle = (req, res) => {
     console.log(req.cookie);
 
       // 解析session
-      const needSetCookie = false
-      const userId = req.cookie.userid
+      let needSetCookie = false
+      let userId = req.cookie.userid
       if (userId) {
           if (!SESSION_DATA[userId]) {
               SESSION_DATA[userId] = {}
           }
       } else {
-        needSetCookie = true
+          needSetCookie = true
           userId = `${Date.now()}_${Math.random()}`
           SESSION_DATA[userId] = {}
       }
       req.session = SESSION_DATA[userId]
-
+      console.log('req.session=====================');
+      console.log(req.session)
     // 处理POSTData
     getPostData(req).then(postData => {
         req.body = postData
