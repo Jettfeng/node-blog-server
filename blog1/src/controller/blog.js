@@ -27,7 +27,6 @@ const newBlog = (blogData = {}) => {
     const createtime = Date.now()
     const sql = `insert into blogs (title, content, createtime , author) values ('${title}','${content}',${createtime},'${author}')`
     return exec(sql).then(insertData => {
-        console.log(insertData)
         return {
             id: insertData.insertId
         }
@@ -45,8 +44,6 @@ const updateBlog = (id, blogData = {}) => {
         update blogs set title='${title}',content='${content}' where id=${id}
     `
     return exec(sql).then(updateData => {
-        console.log(`updateData===============`)
-        console.log(updateData)
         if (updateData.affectedRows > 0) {
             return true
         }
@@ -59,7 +56,6 @@ const updateBlog = (id, blogData = {}) => {
 const delBlog = (id, author) => {
     const sql = `delete from blogs where id='${id}' and author='${author}';`
     return exec(sql).then(delData => {
-        console.log('delData is ', delData)
         if (delData.affectedRows > 0) {
             return true
         }

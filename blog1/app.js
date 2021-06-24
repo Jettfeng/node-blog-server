@@ -39,7 +39,22 @@ const serverHandle = (req, res) => {
     req.path = path
     // 解析 query
     req.query = querystring.parse(url.split('?')[1])
+    
+    // 解析cookie
+    req.cookie = {}
+    const cookieStr = req.headers.cookie || '' // ke1v1;k2=v2;k3=v3这种格式
+    cookieStr.split(';').forEach(item => {
+        if(!item) {
+            return
+        }
+        const arr = item.split('=')
+        const key = arr[0]
+        const value = arr[1]
+        req.cookie[key] = value
+    })
 
+    console.log('req.cookie is ');
+    console.log(req.cookie);
     // 处理POSTData
     getPostData(req).then(postData => {
         req.body = postData
